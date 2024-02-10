@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "bundle_product_GiiDfT": {
+      "type": "bundle-product",
+      "settings": {
+        "bundle_title": "Build Your Own Henna Kit",
+        "product_title": "Stencils",
+        "bundle_collection": "bundle"
+      }
+    }
+  },
+  "order": [
+    "bundle_product_GiiDfT"
+  ]
+}
