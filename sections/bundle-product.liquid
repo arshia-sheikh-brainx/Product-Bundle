@@ -1,3 +1,49 @@
+{% style %}
+.text-center{
+  text-align: center;
+}
+.tag-list {
+  display: flex;
+  justify-content: space-between;
+}
+.tag {
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.bundle-product-list {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+#bundle-products-traditional .bundle-col-product-card , #bundle-products-modren .bundle-col-product-card , #bundle-products-rings .bundle-col-product-card ,  #bundle-products-floral .bundle-col-product-card , #bundle-products-geomatric .bundle-col-product-card , #bundle-products-mandala .bundle-col-product-card{
+  display:none;
+}
+#bundle-products-traditional .bundle-products-traditional , #bundle-products-modren .bundle-products-modren , #bundle-products-rings .bundle-products-rings ,  #bundle-products-floral .bundle-products-floral , #bundle-products-geomatric .bundle-products-geomatric , #bundle-products-mandala .bundle-products-mandala{
+  display: block;
+}
+.bundle-col-product-card img {
+  height: 200px;
+  object-fit: cover;
+  object-position: top;
+  cursor:pointer;
+}
+.selected-product-item.active .empty-card-text{
+  display: none;;
+}
+
+.active{
+  border: 1px solid red;
+}
+.close-icon {
+  cursor: pointer;
+}
+
+{% endstyle %}
+
+
+
+
 {% assign selection_limit = product.metafields.custom.selection_limit | times: 1 %}
 {% assign tag_list = '' %}
 {% for bundle_product in section.settings.bundle_collection.products %}
@@ -136,46 +182,4 @@
 }
 {% endschema %}
 
-{% stylesheet %}
-.text-center{
-  text-align: center;
-}
-.tag-list {
-  display: flex;
-  justify-content: space-between;
-}
-.tag {
-  text-transform: capitalize;
-  cursor: pointer;
-}
-.bundle-product-list {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  flex-wrap: wrap;
-}
-#bundle-products-traditional .bundle-col-product-card , #bundle-products-modren .bundle-col-product-card , #bundle-products-rings .bundle-col-product-card ,  #bundle-products-floral .bundle-col-product-card , #bundle-products-geomatric .bundle-col-product-card , #bundle-products-mandala .bundle-col-product-card{
-  display:none;
-}
-#bundle-products-traditional .bundle-products-traditional , #bundle-products-modren .bundle-products-modren , #bundle-products-rings .bundle-products-rings ,  #bundle-products-floral .bundle-products-floral , #bundle-products-geomatric .bundle-products-geomatric , #bundle-products-mandala .bundle-products-mandala{
-  display: block;
-}
-.bundle-col-product-card img {
-  height: 200px;
-  object-fit: cover;
-  object-position: top;
-  cursor:pointer;
-}
-.selected-product-item.active .empty-card-text{
-  display: none;;
-}
-
-.active{
-  border: 1px solid red;
-}
-.close-icon {
-  cursor: pointer;
-}
-
-{% endstylesheet %}
 
