@@ -1,0 +1,185 @@
+{% style %}
+.text-center{
+  text-align: center;
+}
+.tag-list {
+  display: flex;
+  justify-content: space-between;
+}
+.tag {
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.bundle-product-list {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+#bundle-products-traditional .bundle-col-product-card , #bundle-products-modren .bundle-col-product-card , #bundle-products-rings .bundle-col-product-card ,  #bundle-products-floral .bundle-col-product-card , #bundle-products-geomatric .bundle-col-product-card , #bundle-products-mandala .bundle-col-product-card{
+  display:none;
+}
+#bundle-products-traditional .bundle-products-traditional , #bundle-products-modren .bundle-products-modren , #bundle-products-rings .bundle-products-rings ,  #bundle-products-floral .bundle-products-floral , #bundle-products-geomatric .bundle-products-geomatric , #bundle-products-mandala .bundle-products-mandala{
+  display: block;
+}
+.bundle-col-product-card img {
+  height: 200px;
+  object-fit: cover;
+  object-position: top;
+  cursor:pointer;
+}
+.selected-product-item.active .empty-card-text{
+  display: none;;
+}
+
+.active{
+  border: 1px solid red;
+}
+.close-icon {
+  cursor: pointer;
+}
+
+{% endstyle %}
+
+
+
+
+{% assign selection_limit = product.metafields.custom.selection_limit | times: 1 %}
+{% assign tag_list = '' %}
+{% for bundle_product in section.settings.bundle_collection.products %}
+  {% for tag in bundle_product.tags %}
+    {% if tag contains 'bundle-products' %}
+      {% unless tag_list contains tag %}
+        {% assign tag_list = tag_list | append: tag | append: ',' %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% assign tag_list = tag_list | split: ',' %}
+<template class="product-card-template">
+  <div class="product-card" data-title="">
+    <img src="" alt="Product Image" class="product-image">
+    <div class="close-icon">✖</div>
+  </div>
+</template>
+
+{% if section.settings.bundle_title != blank and section.settings.product_title %}
+  <h2 class="product-title text-center">
+    {{ section.settings.bundle_title }} [<span class="bundle-limit">
+      {{- product.metafields.custom.selection_limit -}}
+    </span>
+    {{ section.settings.product_title }}]
+  </h2>
+{% endif %}
+
+<a
+  class="button {% if product.url == '/products/build-your-own-henna-kit-4-stencils'  %} active {% endif %}"
+  href="https://developer-onboard.myshopify.com/products/build-your-own-henna-kit-4-stencils"
+  >Small Kit
+</a>
+<a
+  class="button  {% if product.url == '/products/build-your-own-henna-kit-8-stencils'  %} active {% endif %}"
+  href="https://developer-onboard.myshopify.com/products/build-your-own-henna-kit-8-stencils"
+>
+  Large Kit
+</a>
+<div class="bundle-selected-products">
+  Selected {{ section.settings.product_title }}: <span class="selected-product-count"> 0 </span> out of
+  <span class="max-product-count">{{ product.metafields.custom.selection_limit }}</span>
+  {{ product.price | money_with_currency }}
+
+  <div class="selected_product_list">
+    {% for i in (1..selection_limit) %}
+      <div class="selected-product-item empty">
+        <span class="empty-card-text"> No product selected </span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="bundle-products-container">
+  <div class="tag-list">
+    {% for tag in tag_list %}
+      {% assign tag_text = tag | split: 'bundle-products-' %}
+      <div class="tag {% if forloop.first %}active {% endif %}" data-tag="{{ tag }}">{{ tag_text[1] }}</div>
+    {% endfor %}
+  </div>
+  <div class="bundle-product-list">
+    {% for bundle_product in section.settings.bundle_collection.products %}
+      <div
+        class="
+          bundle-col-product-card  {% for tag in bundle_product.tags %}
+            {% if tag contains 'bundle-products' %}
+              {{ tag  }}
+            {% endif %}
+          {% endfor %}
+        "
+      >
+        {% for media in bundle_product.media limit: 1 %}
+          {{ media.preview_image | image_url: width: 200 | image_tag: loading: lazy }}
+        {% endfor %}
+        <div class="product-card_title">{{ bundle_product.title }}</div>
+      </div>
+    {% endfor %}
+  </div>
+  <form action="/cart/add" method="post">
+    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+    {% for i in (1..selection_limit) %}
+      <input
+        required
+        class="selected_bundle_product"
+        id="{{-  section.settings.product_title  -}}_{{- forloop.index -}}"
+        type="hidden"
+        name="properties[{{-  section.settings.product_title  -}}_{{- forloop.index -}}]"
+      >
+    {% endfor %}
+    <div>
+      <button type="button" name="add" disabled="" class="custom-submit-btn">
+        <span class="remaining-product-count">{{ product.metafields.custom.selection_limit }}</span> Remaining
+      </button>
+    </div>
+  </form>
+</div>
+<script>
+  let selectionLimit = {{ product.metafields.custom.selection_limit | times: 1 }}
+</script>
+
+<script src="{{ 'bundle.js' | asset_url }}"></script>
+
+{% schema %}
+{
+  "name": "Bundle Section",
+  "tag": "section",
+  "class": "bundle-product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Bundle Settings"
+    },
+    {
+      "type": "text",
+      "label": "Bundle Title",
+      "id": "bundle_title"
+    },
+    {
+      "type": "text",
+      "label": "product Title",
+      "id": "product_title"
+    },
+    {
+      "type": "collection",
+      "label": "Bundle Collection",
+      "id": "bundle_collection",
+      "info": "Select the bundle Collection "
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "bundle product"
+    }
+  ]
+}
+{% endschema %}
+
+
